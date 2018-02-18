@@ -1,4 +1,8 @@
 {
-  "plugins": ["babel-plugin-styled-components"],
-  "presets": ["react"]
+  "plugins": [
+    "transform-object-rest-spread",
+    "babel-plugin-styled-components",
+    "transform-class-properties"
+  ],
+  "presets": ["env", "react"]
 }
