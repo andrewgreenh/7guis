@@ -1,9 +1,8 @@
 import styled from 'styled-components';
-
 import { error, lightGray, primary } from './colors';
 import { animationDuration } from './variables';
 
-export default styled.input`
+const Select = styled.select`
   background-color: ${({ invalid }) => (invalid ? error : 'transparent')};
   border: 1px solid ${lightGray};
   padding: 0.3rem;
@@ -12,8 +11,8 @@ export default styled.input`
   &:focus {
     border-color: ${primary};
   }
-
-  &[disabled] {
-    color: ${lightGray};
-  }
 `;
+
+Select.Option = 'option';
+
+export default Select;
