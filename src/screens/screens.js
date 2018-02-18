@@ -1,6 +1,7 @@
 import CounterPage from './counter/CounterPage';
 import FlightBookerPage from './flight-booker/FlightBookerPage';
 import TemperatureConverterPage from './temperature-converter/TemperatureConverterPage';
+import TimerPage from './timer/TimerPage';
 
 export default [
   {
@@ -17,5 +18,10 @@ export default [
     path: '/flight-booker',
     name: 'Flight Booker',
     component: FlightBookerPage
+  },
+  {
+    path: '/timer',
+    name: 'Timer',
+    component: TimerPage
   }
 ];
