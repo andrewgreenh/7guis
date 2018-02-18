@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "parcel build src/index.html",
     "start": "parcel src/index.html -p 3000"
   },
   "author": "",
@@ -20,6 +21,8 @@
     "parcel-bundler": "^1.6.1"
   },
   "dependencies": {
+    "date-fns": "^1.29.0",
+    "lodash": "^4.17.5",
     "polished": "^1.9.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",

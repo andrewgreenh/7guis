@@ -22,4 +22,10 @@ export default styled.button`
   &:active {
     background-color: ${lighten(0.2, accent)};
   }
+
+  &[disabled] {
+    color: ${lighten(0.4, primary)};
+    cursor: default;
+    background-color: transparent;
+  }
 `;
