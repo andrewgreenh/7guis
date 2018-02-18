@@ -23,6 +23,7 @@ class ValidatedInput extends React.PureComponent {
 
   render = () => (
     <ValidatedInputElement
+      {...this.props}
       value={this.state.value === null ? this.props.value : this.state.value}
       onChange={this.handleChange}
       onFocus={this.handleFocus}

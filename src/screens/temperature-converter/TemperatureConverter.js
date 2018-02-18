@@ -31,8 +31,9 @@ class TemperatureConverter extends React.PureComponent {
     return (
       <InputGroup>
         {formats.map(({ name, convert, revert }) => (
-          <Label label={name} key={name}>
+          <Label htmlFor={name} label={name} key={name}>
             <ValidatedInput
+              id={name}
               value={convert(this.state.value)}
               onChange={this.handleChange(revert)}
               isValid={isNumberString}

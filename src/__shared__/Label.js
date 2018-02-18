@@ -7,11 +7,11 @@ const Wrapper = styled.div`
   flex-direction: column;
 `;
 
-function Label({ label, children }) {
+function Label({ htmlFor, label, children }) {
   return (
     <Wrapper>
       {children}
-      <label>{label}</label>
+      <label htmlFor={htmlFor}>{label}</label>
     </Wrapper>
   );
 }
