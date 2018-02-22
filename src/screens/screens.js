@@ -1,4 +1,5 @@
 import CounterPage from './counter/CounterPage';
+import CrudPage from './crud/CrudPage';
 import FlightBookerPage from './flight-booker/FlightBookerPage';
 import TemperatureConverterPage from './temperature-converter/TemperatureConverterPage';
 import TimerPage from './timer/TimerPage';
@@ -23,5 +24,10 @@ export default [
     path: '/timer',
     name: 'Timer',
     component: TimerPage
+  },
+  {
+    path: '/crud',
+    name: 'CRUD',
+    component: CrudPage
   }
 ];
