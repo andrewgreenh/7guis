@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+
 import { error, lightGray, primary } from './colors';
 import { animationDuration } from './variables';
 

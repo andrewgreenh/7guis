@@ -1,5 +1,6 @@
-import { now, round } from 'lodash';
+import { round } from 'lodash';
 import React from 'react';
+
 import Button from '../../__shared__/Button';
 import Input from '../../__shared__/Input';
 

@@ -1,6 +1,6 @@
+import { map, mapValues } from 'lodash';
 import React from 'react';
 
-import { map, mapValues } from 'lodash';
 import Input from '../../__shared__/Input';
 import InputGroup from '../../__shared__/InputGroup';
 import Label from '../../__shared__/Label';
