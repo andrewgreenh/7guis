@@ -5,7 +5,6 @@ import styled from 'styled-components';
 
 import { lightGray } from '../../__shared__/colors';
 import Input from '../../__shared__/Input';
-import Subscribe from '../../__shared__/Subscribe';
 
 const filterPadding = '1rem';
 export const filterHeight = `calc(${filterPadding} + 1.6rem)`;
@@ -62,7 +61,6 @@ class PersonSelector extends React.PureComponent {
   };
 
   render() {
-    const { personRepository } = this.props;
     return (
       <Wrapper>
         <Filter>
@@ -73,19 +71,16 @@ class PersonSelector extends React.PureComponent {
           />
         </Filter>
         <ListWrapper>
-          <List>
-            <Subscribe observable={personRepository}>
-              {this.renderPersons(this.props, this.state)}
-            </Subscribe>
-          </List>
+          <List>{this.renderPersons()}</List>
         </ListWrapper>
       </Wrapper>
     );
   }
 
-  renderPersons = (props, state) => personsById => {
+  renderPersons = () => {
+    const { personsById } = this.props;
     const sorted = orderBy(personsById, ['name', 'surname']);
-    const filter = state.filter.toLowerCase();
+    const filter = this.state.filter.toLowerCase();
     const filtered = sorted.filter(
       person =>
         person.name.toLowerCase().includes(filter) || person.surname.toLowerCase().includes(filter)
@@ -93,8 +88,8 @@ class PersonSelector extends React.PureComponent {
     return filtered.map(person => (
       <ListItem
         key={person.id}
-        selected={person.id === props.selectedPersonId}
-        onClick={() => props.onSelect(person)}
+        selected={person.id === this.props.selectedPersonId}
+        onClick={() => this.props.onSelect(person)}
       >
         {person.name}, {person.surname}
       </ListItem>

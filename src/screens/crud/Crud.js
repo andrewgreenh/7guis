@@ -1,11 +1,11 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, omit } from 'lodash';
 import React from 'react';
 import styled from 'styled-components';
 
 import Button from '../../__shared__/Button';
 import { lightGray } from '../../__shared__/colors';
+import { addPerson, deletePerson, getPersonsById, updatePerson } from './personApi';
 import PersonForm from './PersonForm';
-import PersonRepository from './PersonRepository';
 import PersonSelector from './PersonSelector';
 
 const Main = styled.div`
@@ -37,13 +37,15 @@ const Commands = styled.div`
 
 class Crud extends React.PureComponent {
   state = {
+    personsById: {},
     selectedPersonId: null,
     name: '',
     surname: ''
   };
 
-  componentWillMount() {
-    this.personRepository = new PersonRepository();
+  async componentDidMount() {
+    const personsById = await getPersonsById();
+    this.setState({ personsById });
   }
 
   render() {
@@ -52,7 +54,7 @@ class Crud extends React.PureComponent {
         <Columns>
           <Column>
             <PersonSelector
-              personRepository={this.personRepository}
+              personsById={this.state.personsById}
               selectedPersonId={this.state.selectedPersonId}
               onSelect={this.handleSelect}
             />
@@ -87,25 +89,35 @@ class Crud extends React.PureComponent {
     this.setState({ [key]: e.target.value });
   };
 
-  handleCreate = () => {
-    this.personRepository.add(this.state.name, this.state.surname);
-    this.setState({ name: '', surname: '' });
+  handleCreate = async () => {
+    const created = await addPerson(this.state.name, this.state.surname);
+    this.setState(state => ({
+      name: '',
+      surname: '',
+      personsById: { ...state.personsById, [created.id]: created }
+    }));
   };
 
-  handleDelete = () => {
-    this.personRepository.delete(this.state.selectedPersonId);
-    this.setState({ selectedPersonId: null, name: '', surname: '' });
+  handleDelete = async () => {
+    deletePerson(this.state.selectedPersonId);
+    this.setState(state => ({
+      selectedPersonId: null,
+      name: '',
+      surname: '',
+      personsById: omit(state.personsById, this.state.selectedPersonId)
+    }));
   };
 
   handleSelect = person => {
     this.setState({ selectedPersonId: person.id, name: person.name, surname: person.surname });
   };
 
-  handleUpdate = () => {
-    this.personRepository.update(this.state.selectedPersonId, {
+  handleUpdate = async () => {
+    const updated = await updatePerson(this.state.selectedPersonId, {
       name: this.state.name,
       surname: this.state.surname
     });
+    this.setState(state => ({ personsById: { ...state.personsById, [updated.id]: updated } }));
   };
 }
 
