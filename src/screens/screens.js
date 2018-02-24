@@ -1,3 +1,4 @@
+import CircleDrawerPage from './circle-drawer/CircleDrawerPage';
 import CounterPage from './counter/CounterPage';
 import CrudPage from './crud/CrudPage';
 import FlightBookerPage from './flight-booker/FlightBookerPage';
@@ -29,5 +30,10 @@ export default [
     path: '/crud',
     name: 'CRUD',
     component: CrudPage
+  },
+  {
+    path: '/circle-drawer',
+    name: 'Circle Drawer',
+    component: CircleDrawerPage
   }
 ];
