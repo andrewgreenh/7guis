@@ -2,36 +2,42 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Input from '../../__shared__/Input';
-import { filterHeight } from './PersonSelector';
 
 const Wrapper = styled.div`
+  display: grid;
+  grid-column: 2;
+  grid-gap: 0.5rem 0.5rem;
+  grid-row: 2;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto 1fr;
   height: 100%;
+  padding: 0.5rem;
 `;
 
-const FilterPlaceholder = styled.div`
-  height: ${filterHeight};
+const Cell = styled.div`
+  grid-column: ${props => props.col};
+  grid-row: ${props => props.row};
+
+  ${Input} {
+    width: 100%;
+  }
 `;
 
 function PersonForm(props) {
   return (
     <Wrapper>
-      <FilterPlaceholder />
-      <table>
-        <tbody>
-          <tr>
-            <td>Name:</td>
-            <td>
-              <Input value={props.name} onChange={props.onChange('name')} />
-            </td>
-          </tr>
-          <tr>
-            <td>Surname:</td>
-            <td>
-              <Input value={props.surname} onChange={props.onChange('surname')} />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <Cell col={1} row={1}>
+        Name:
+      </Cell>
+      <Cell col={2} row={1}>
+        <Input value={props.name} onChange={props.onChange('name')} />
+      </Cell>
+      <Cell col={1} row={2}>
+        Surname:
+      </Cell>
+      <Cell col={2} row={2}>
+        <Input value={props.surname} onChange={props.onChange('surname')} />
+      </Cell>
     </Wrapper>
   );
 }

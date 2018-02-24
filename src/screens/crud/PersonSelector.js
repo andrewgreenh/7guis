@@ -6,27 +6,13 @@ import styled from 'styled-components';
 import { lightGray } from '../../__shared__/colors';
 import Input from '../../__shared__/Input';
 
-const filterPadding = '1rem';
-export const filterHeight = `calc(${filterPadding} + 1.6rem)`;
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-`;
-
-const ListWrapper = styled.div`
-  border: 1px solid ${lightGray};
-  flex: 1 1 auto;
-  height: 100%;
-  overflow: hidden;
-`;
-
 const List = styled.ul`
-  height: 100%;
+  grid-column: 1;
+  grid-row: 2;
+  max-height: 100%;
   list-style-type: none;
   overflow-y: auto;
+  padding: 0.5rem;
 `;
 
 const ListItem = styled.li`
@@ -40,9 +26,10 @@ const ListItem = styled.li`
 `;
 
 const Filter = styled.div`
+  grid-column: 1;
+  grid-row: 1;
   display: flex;
-  flex: 0 0 auto;
-  padding-bottom: ${filterPadding};
+  padding: 0.5rem;
 
   ${Input} {
     flex: 1 1 auto;
@@ -62,7 +49,7 @@ class PersonSelector extends React.PureComponent {
 
   render() {
     return (
-      <Wrapper>
+      <React.Fragment>
         <Filter>
           <Label>Filter:</Label>
           <Input
@@ -70,10 +57,8 @@ class PersonSelector extends React.PureComponent {
             onChange={e => this.setState({ filter: e.target.value })}
           />
         </Filter>
-        <ListWrapper>
-          <List>{this.renderPersons()}</List>
-        </ListWrapper>
-      </Wrapper>
+        <List>{this.renderPersons()}</List>
+      </React.Fragment>
     );
   }
 

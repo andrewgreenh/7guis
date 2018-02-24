@@ -10,29 +10,17 @@ import PersonSelector from './PersonSelector';
 
 const Main = styled.div`
   border: 1px solid ${lightGray};
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: auto 1fr auto;
   height: 300px;
   width: 500px;
 `;
 
-const Columns = styled.div`
-  display: flex;
-  height: 100%;
-  flex: 1 1 auto;
-  overflow: hidden;
-`;
-
-const Column = styled.div`
-  flex: 1 1 0;
-  height: 100%;
-  padding: 0.5rem;
-`;
-
 const Commands = styled.div`
-  flex: 0 0 auto;
+  grid-row: 3;
+  grid-column: 1 / 2;
   padding: 0 0.5rem 0.5rem;
-  width: 100%;
 `;
 
 class Crud extends React.PureComponent {
@@ -51,22 +39,16 @@ class Crud extends React.PureComponent {
   render() {
     return (
       <Main>
-        <Columns>
-          <Column>
-            <PersonSelector
-              personsById={this.state.personsById}
-              selectedPersonId={this.state.selectedPersonId}
-              onSelect={this.handleSelect}
-            />
-          </Column>
-          <Column>
-            <PersonForm
-              name={this.state.name}
-              surname={this.state.surname}
-              onChange={this.handleChange}
-            />
-          </Column>
-        </Columns>
+        <PersonSelector
+          personsById={this.state.personsById}
+          selectedPersonId={this.state.selectedPersonId}
+          onSelect={this.handleSelect}
+        />
+        <PersonForm
+          name={this.state.name}
+          surname={this.state.surname}
+          onChange={this.handleChange}
+        />
         <Commands>
           <Button
             disabled={isEmpty(this.state.name) || isEmpty(this.state.surname)}
