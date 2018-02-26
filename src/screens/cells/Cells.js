@@ -15,7 +15,7 @@ class Cells extends React.PureComponent {
   constructor(props) {
     super(props);
     this.cellState = new CellState();
-    this.cellState.updateRaw('A1', 'First Cell');
+    this.cellState.updateRaw('A1', '=1234.123+4');
   }
   render() {
     return (

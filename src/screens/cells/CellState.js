@@ -1,3 +1,5 @@
+import parse from './ast/parse';
+
 class CellState {
   statesByKey = {};
   subscribersByKey = {};
@@ -18,6 +20,16 @@ class CellState {
   }
 
   propagateFrom(key) {
+    const { rawValue } = this.statesByKey[key];
+    if (!rawValue.startsWith('=')) {
+      this.notifyKey(key);
+      return;
+    }
+    try {
+      const ast = parse(rawValue.substring(1));
+    } catch (e) {
+      console.error(e);
+    }
     this.notifyKey(key);
   }
 }
