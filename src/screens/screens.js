@@ -1,3 +1,4 @@
+import CellsPage from './cells/CellsPage';
 import CircleDrawerPage from './circle-drawer/CircleDrawerPage';
 import CounterPage from './counter/CounterPage';
 import CrudPage from './crud/CrudPage';
@@ -35,5 +36,10 @@ export default [
     path: '/circle-drawer',
     name: 'Circle Drawer',
     component: CircleDrawerPage
+  },
+  {
+    path: '/cells',
+    name: 'Cells',
+    component: CellsPage
   }
 ];
