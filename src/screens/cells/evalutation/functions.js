@@ -1,5 +1,8 @@
+import { flatten } from 'lodash';
+
 const functions = {
-  sum: (...args) => args.reduce((a, b) => +a + +b, 0)
+  sum: (...args) => flatten(args).reduce((a, b) => +a + +b, 0),
+  mul: (...args) => flatten(args).reduce((a, b) => +a * +b, 1)
 };
 
 export default functions;

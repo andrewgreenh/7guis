@@ -1,4 +1,4 @@
-import { flatMap } from 'lodash';
+import { cloneDeep, flatMap } from 'lodash';
 
 import evaluate from './evalutation/evaluate';
 import parse from './parser/parse';
@@ -10,6 +10,7 @@ class CellState {
   subscribersByKey = {};
 
   notifyKey = key => {
+    console.log(cloneDeep(this.statesByKey), cloneDeep(this.dependantsByKey));
     if (this.subscribersByKey[key]) this.subscribersByKey[key](this.statesByKey[key]);
   };
 
@@ -38,15 +39,15 @@ class CellState {
     } else {
       this.updatePlain(key);
     }
-    let keysToUpdate;
     try {
-      keysToUpdate = this.getKeysToUpdate(key);
+      const keysToUpdate = this.getKeysToUpdate(key);
+      this.evaluateKeys(keysToUpdate);
     } catch (e) {
       state.error = e.message;
-      this.updateIncorrectFormula(key);
+      state.value = 'ERROR: ' + state.rawValue;
+      state.error = state.error;
       this.notifyKey(key);
     }
-    if (keysToUpdate) this.evaluateKeys(keysToUpdate);
   };
 
   updatePlain = key => {

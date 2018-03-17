@@ -1,3 +1,4 @@
+import { toString } from 'lodash';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -7,11 +8,11 @@ const Tooltip = styled.div`
   display: none;
   background-color: lightgoldenrodyellow;
   font-family: monospace;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
+  padding: 0.2rem;
   position: absolute;
   top: 100%;
   white-space: pre-wrap;
-  width: 300px;
   z-index: 1;
 `;
 
@@ -71,7 +72,7 @@ class Cell extends React.PureComponent {
     }
     return (
       <Content onDoubleClick={this.handleDblClick}>
-        <span>{this.state.value == null ? this.state.rawValue : this.state.value}</span>
+        <span>{toString(this.state.value == null ? this.state.rawValue : this.state.value)}</span>
         {this.state.error && <Tooltip>{this.state.error}</Tooltip>}
       </Content>
     );

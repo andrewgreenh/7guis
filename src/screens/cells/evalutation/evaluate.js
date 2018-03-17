@@ -1,5 +1,3 @@
-import { flatMap } from 'lodash';
-
 import expandCellRef from '../utils/expandCellRef';
 import functions from './functions';
 
@@ -17,7 +15,9 @@ function evaluate(ast, statesByKey) {
     }
 
     case 'functionCall': {
-      const args = flatMap(ast.args, node => evaluate(node, statesByKey));
+      const args = ast.args.map(node => evaluate(node, statesByKey));
+      const func = functions[ast.functionName];
+      if (!func) throw new Error(`Unknown function ${ast.functionName}`);
       return functions[ast.functionName](...args);
     }
   }
