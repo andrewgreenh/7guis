@@ -1,7 +1,5 @@
 import errorInCharacterStream from './errorInCharacterStream';
 
-const operators = '+ - * /'.split(' ');
-const punctuation = '( ) ;'.split(' ');
 const characters = 'abcdefghijklmnopqrstuvwxyz'.split('');
 
 const tokenStream = characterStream => tokenStep(characterStream);
@@ -14,6 +12,7 @@ function tokenStep(characterStream) {
   let tokenType = null;
   let takeNextCharacter = genericTakeNextCharacter;
   let char = characterStream.current;
+  let startOfToken = characterStream.state.position;
 
   while (!stepDone) {
     skipWhitespace();
@@ -21,8 +20,11 @@ function tokenStep(characterStream) {
   }
   return {
     current: { type: tokenType, value: tokenValue },
-    state: characterStream,
-    done: characterStream.done,
+    state: {
+      characterStream,
+      position: startOfToken
+    },
+    done: tokenValue === '',
     next: () => tokenStep(characterStream)
   };
 
@@ -37,11 +39,18 @@ function tokenStep(characterStream) {
 
   function genericTakeNextCharacter() {
     if (characters.includes(char)) return (takeNextCharacter = takeWordCharacter);
-    if (punctuation.includes(char)) return (takeNextCharacter = takePunctuationCharacter);
-    if (operators.includes(char)) return (takeNextCharacter = takeOperatorCharacter);
+    if (char === '(') return (takeNextCharacter = () => takePunctuationCharacter('openBracket'));
+    if (char === ')') return (takeNextCharacter = () => takePunctuationCharacter('closeBracket'));
+    if (char === ';') return (takeNextCharacter = () => takePunctuationCharacter('semicolon'));
     if (/\d/.test(char)) return (takeNextCharacter = takeNumberCharacter);
 
+    if (char === '') return (takeNextCharacter = finish);
     throw errorInCharacterStream(characterStream, `Unexpected character '${char}'`);
+  }
+
+  function finish() {
+    stepDone = true;
+    tokenType = 'DONE';
   }
 
   function takeWordCharacter() {
@@ -50,21 +59,14 @@ function tokenStep(characterStream) {
       nextChar();
     } else {
       stepDone = true;
-      tokenType = isCellRef(tokenValue) ? 'cellReference' : 'function';
+      tokenType = isCellRef(tokenValue) ? 'cellReference' : 'functionCall';
     }
   }
 
-  function takePunctuationCharacter() {
+  function takePunctuationCharacter(type) {
     tokenValue = char;
     stepDone = true;
-    tokenType = 'punctuation';
-    nextChar();
-  }
-
-  function takeOperatorCharacter() {
-    tokenValue = char;
-    stepDone = true;
-    tokenType = 'operator';
+    tokenType = type;
     nextChar();
   }
 
@@ -73,6 +75,7 @@ function tokenStep(characterStream) {
       tokenValue += char;
       nextChar();
     } else {
+      tokenValue = parseFloat(tokenValue);
       stepDone = true;
       tokenType = 'number';
     }

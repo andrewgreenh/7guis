@@ -1,7 +1,7 @@
 import parse from './ast/parse';
 
 class CellState {
-  statesByKey = {};
+  statesByKey = JSON.parse(localStorage.getItem('7guis-cell-state') || '{}');
   subscribersByKey = {};
 
   notifyKey(key) {
@@ -16,6 +16,7 @@ class CellState {
 
   updateRaw(key, rawValue) {
     this.statesByKey[key] = { rawValue };
+    localStorage.setItem('7guis-cell-state', JSON.stringify(this.statesByKey));
     this.propagateFrom(key);
   }
 

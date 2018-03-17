@@ -1,11 +1,11 @@
 import { times } from 'lodash';
 
-function errorInCharacterStream(characterStream, error) {
+function errorInCharacterStream(characterStream, error, customPosition) {
   throw new Error(
-    `${error}. At position ${characterStream.state.position}
+    `${error}. At position ${customPosition || characterStream.state.position}
 
  ${characterStream.state.string}
-${times(characterStream.state.position, () => ' ').join('')}^
+${times(customPosition || characterStream.state.position, () => ' ').join('')}^
 `
   );
 }
