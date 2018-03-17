@@ -1,6 +1,7 @@
 import expandCellRef from './expandCellRef';
 
 function getDependencies(ast, dependencies = new Set()) {
+  if (!ast) return dependencies;
   switch (ast.type) {
     case 'plainValue': {
       if (ast.value.type !== 'cellReference') return dependencies;

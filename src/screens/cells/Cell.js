@@ -71,7 +71,7 @@ class Cell extends React.PureComponent {
     }
     return (
       <Content onDoubleClick={this.handleDblClick}>
-        <span>{this.state.value || this.state.rawValue}</span>
+        <span>{this.state.value == null ? this.state.rawValue : this.state.value}</span>
         {this.state.error && <Tooltip>{this.state.error}</Tooltip>}
       </Content>
     );
