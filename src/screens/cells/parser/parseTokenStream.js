@@ -67,15 +67,15 @@ const states = {
   }
 };
 
-function buildAst(tokenStream) {
-  const result = delegate(['initial'])(tokenStream);
-  if (!result.remainingTokens.done)
+function parseTokenStream(tokenStream) {
+  const ast = delegate(['initial'])(tokenStream);
+  if (!ast.remainingTokens.done)
     errorInCharacterStream(
-      result.remainingTokens.state.characterStream,
+      ast.remainingTokens.state.characterStream,
       `Unexpected token after expression.`,
-      result.remainingTokens.state.position
+      ast.remainingTokens.state.position
     );
-  return result;
+  return ast;
 }
 
-export default buildAst;
+export default parseTokenStream;

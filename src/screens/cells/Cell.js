@@ -3,10 +3,23 @@ import styled from 'styled-components';
 
 import Input from '../../__shared__/Input';
 
+const Tooltip = styled.div`
+  display: none;
+  background-color: lightgoldenrodyellow;
+  font-family: monospace;
+  font-size: 0.7rem;
+  position: absolute;
+  top: 100%;
+  white-space: pre-wrap;
+  width: 300px;
+  z-index: 1;
+`;
+
 const Content = styled.div`
   align-items: center;
   display: flex;
   height: 100%;
+  position: relative;
   width: 100%;
 
   span {
@@ -18,6 +31,10 @@ const Content = styled.div`
     height: 100%;
     width: 100%;
   }
+
+  &:hover ${Tooltip} {
+    display: block;
+  }
 `;
 
 class Cell extends React.PureComponent {
@@ -25,6 +42,7 @@ class Cell extends React.PureComponent {
     rawMode: false,
     rawValue: null,
     value: null,
+    error: null,
     inputValue: ''
   };
 
@@ -54,6 +72,7 @@ class Cell extends React.PureComponent {
     return (
       <Content onDoubleClick={this.handleDblClick}>
         <span>{this.state.value || this.state.rawValue}</span>
+        {this.state.error && <Tooltip>{this.state.error}</Tooltip>}
       </Content>
     );
   }

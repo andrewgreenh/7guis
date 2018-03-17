@@ -1,7 +1,9 @@
-import parse from './ast/parse';
+import parse from './parser/parse';
+import getDependencies from './utils/getDependencies';
 
 class CellState {
-  statesByKey = JSON.parse(localStorage.getItem('7guis-cell-state') || '{}');
+  statesByKey = {};
+  dependantsByKey = {};
   subscribersByKey = {};
 
   notifyKey(key) {
@@ -15,21 +17,66 @@ class CellState {
   }
 
   updateRaw(key, rawValue) {
-    this.statesByKey[key] = { rawValue };
+    if (!this.statesByKey[key]) this.statesByKey[key] = {};
+    this.cleanDependencies(key);
+    const state = this.statesByKey[key];
+    state.rawValue = rawValue;
     localStorage.setItem('7guis-cell-state', JSON.stringify(this.statesByKey));
+    const isFormula = rawValue.startsWith('=');
+
+    if (isFormula) {
+      try {
+        const ast = parse(rawValue.substring(1));
+        state.ast = ast;
+        this.updateCorrectFormula(key);
+      } catch (e) {
+        state.error = e.message;
+        this.updateIncorrectFormula(key);
+      }
+    } else {
+      this.updatePlain(key);
+    }
     this.propagateFrom(key);
   }
 
-  propagateFrom(key) {
+  updatePlain(key) {
+    const state = this.statesByKey[key];
+    state.value = state.rawValue;
+    state.ast = null;
+    state.error = null;
+    state.dependencies = new Set();
+  }
+
+  updateCorrectFormula(key) {
+    const state = this.statesByKey[key];
+    state.value = 'formula: ' + state.rawValue;
+    state.ast = state.ast;
+    state.error = null;
+    state.dependencies = getDependencies(state.ast);
+    [...this.statesByKey[key].dependencies].forEach(dependency => {
+      if (!this.dependantsByKey[dependency]) this.dependantsByKey[dependency] = new Set();
+      this.dependantsByKey[dependency].add(key);
+    });
+  }
+
+  updateIncorrectFormula(key) {
+    const state = this.statesByKey[key];
+    state.value = 'ERROR: ' + state.rawValue;
+    state.ast = null;
+    state.error = state.error;
+    state.dependencies = new Set();
+  }
+
+  cleanDependencies(key) {
+    const oldDependencies = this.statesByKey[key].dependencies || new Set();
+    [...oldDependencies].forEach(dependency => this.dependantsByKey[dependency].delete(key));
+  }
+
+  propagateFrom(key, queue = []) {
     const { rawValue } = this.statesByKey[key];
     if (!rawValue.startsWith('=')) {
       this.notifyKey(key);
       return;
-    }
-    try {
-      const ast = parse(rawValue.substring(1));
-    } catch (e) {
-      console.error(e);
     }
     this.notifyKey(key);
   }

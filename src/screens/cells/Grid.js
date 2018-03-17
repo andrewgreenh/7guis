@@ -8,7 +8,7 @@ import { darkGray, lightGray } from '../../__shared__/colors';
 const HEADER_HEIGHT = 24;
 const FIXED_WIDTH = 30;
 
-const ABC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const ABC = 'abcdefghijklmnopqrstuvwxyz';
 
 const SCROLLBAR_WIDTH = 12;
 

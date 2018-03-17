@@ -14,8 +14,15 @@ const HEIGHT = 300;
 class Cells extends React.PureComponent {
   cellState = new CellState();
 
+  componentWillMount() {
+    this.cellState.updateRaw(
+      'a1',
+      JSON.parse(localStorage.getItem('7guis-cell-state') || '{}').a1.rawValue || ''
+    );
+  }
+
   render() {
-    this.cellState.propagateFrom('A1');
+    this.cellState.propagateFrom('a1');
     return (
       <Grid
         rowHeight={ROW_HEIGHT}

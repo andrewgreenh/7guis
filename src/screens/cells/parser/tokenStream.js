@@ -54,7 +54,7 @@ function tokenStep(characterStream) {
   }
 
   function takeWordCharacter() {
-    if (/\w|\d/i.test(char)) {
+    if (/\w|\d|:/i.test(char)) {
       tokenValue += char;
       nextChar();
     } else {
@@ -83,5 +83,5 @@ function tokenStep(characterStream) {
 }
 
 function isCellRef(string) {
-  return /\w+\d+/i.test(string);
+  return /\w+\d+(:\w+\d+)?/i.test(string);
 }
