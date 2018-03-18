@@ -1,4 +1,4 @@
-import { filter, initial, last, minBy, sortBy } from 'lodash';
+import { filter, minBy, sortBy } from 'lodash';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -6,6 +6,134 @@ import Button from '../../__shared__/Button';
 import { lightGray } from '../../__shared__/colors';
 import Input from '../../__shared__/Input';
 import { animationDuration } from '../../__shared__/variables';
+import ActionHistory from './ActionHistory';
+
+const getDistance = p1 => p2 => Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
+
+class CircleDrawer extends React.PureComponent {
+  actionHistory = new ActionHistory({});
+
+  state = {
+    circlesById: {},
+    hoveredCircleId: null,
+    selectedCircleId: null,
+    undoable: false,
+    redoable: false
+  };
+
+  componentDidMount() {
+    this.unsubsribe = this.actionHistory.onNewState(({ state: circlesById, undoable, redoable }) =>
+      this.setState({ circlesById, undoable, redoable })
+    );
+  }
+
+  componentWillUnmount() {
+    this.unsubsribe();
+  }
+
+  render() {
+    const { circlesById, undoable, redoable, hoveredCircleId, selectedCircleId } = this.state;
+    const selectedCircle = circlesById[selectedCircleId];
+    const sortedCircles = sortBy(circlesById, ({ id }) => (id === hoveredCircleId ? 1 : 0));
+    return (
+      <MainFrame>
+        <Commands>
+          <Button disabled={!undoable} onClick={this.actionHistory.undo}>
+            Undo
+          </Button>
+          <Button disabled={!redoable} onClick={this.actionHistory.redo}>
+            Redo
+          </Button>
+        </Commands>
+        <CirclesFrame>
+          <SVG
+            innerRef={svg => (this.svg = svg)}
+            onClick={this.handleClick}
+            onMouseMove={this.handleMouseMove}
+          >
+            {sortedCircles.map(({ id, x, y, r }) => (
+              <Circle key={id} cx={x} cy={y} r={r} hovered={id === this.state.hoveredCircleId} />
+            ))}
+          </SVG>
+        </CirclesFrame>
+        {selectedCircle ? (
+          <React.Fragment>
+            <ModalBackdrop onClick={this.close} />
+            <Modal>
+              <Close onClick={this.close}>X</Close>
+              <p>
+                Adjust radius of circle (x: {selectedCircle.x} / y: {selectedCircle.y})
+              </p>
+              <Input
+                type="range"
+                min={5}
+                max={100}
+                value={selectedCircle.r}
+                onChange={this.handleRadiusChange}
+              />
+            </Modal>
+          </React.Fragment>
+        ) : null}
+      </MainFrame>
+    );
+  }
+
+  nextId = 1;
+
+  open = () => this.setState({ selectedCircleId: this.state.hoveredCircleId });
+
+  close = () => {
+    this.setState({ selectedCircleId: null });
+    this.actionHistory.nextState(this.state.circlesById);
+  };
+
+  addCircle = ({ x, y }) => {
+    const id = this.nextId++;
+    this.actionHistory.nextState({ ...this.state.circlesById, [id]: { id, x, y, r: 20 } });
+  };
+
+  getEventCoordinates = e => {
+    const { left: svgLeft, top: svgTop } = this.svg.getBoundingClientRect();
+    const { clientX: clickLeft, clientY: clickTop } = e;
+    const x = Math.round(clickLeft - svgLeft);
+    const y = Math.round(clickTop - svgTop);
+    return { x, y };
+  };
+
+  handleClick = e => {
+    if (this.state.hoveredCircleId) this.open();
+    else this.addCircle(this.getEventCoordinates(e));
+  };
+
+  handleRadiusChange = e => {
+    const value = e.target.value;
+    this.setState(({ circlesById, selectedCircleId }) => {
+      const selectedCircle = circlesById[selectedCircleId];
+      return {
+        circlesById: {
+          ...circlesById,
+          [selectedCircleId]: {
+            ...selectedCircle,
+            r: value
+          }
+        }
+      };
+    });
+  };
+
+  handleMouseMove = e => {
+    const { x, y } = this.getEventCoordinates(e);
+    const hoveredCircles = filter(this.state.circlesById, circle => {
+      const distance = getDistance({ x, y })(circle);
+      return distance < circle.r;
+    });
+    if (hoveredCircles.length === 0) return this.setState({ hoveredCircleId: null });
+    const closest = minBy(hoveredCircles, getDistance({ x, y }));
+    this.setState({ hoveredCircleId: closest.id });
+  };
+}
+
+export default CircleDrawer;
 
 const MainFrame = styled.div`
   border: 1px solid ${lightGray};
@@ -73,146 +201,3 @@ const Close = styled.span`
   top: 0;
   right: 0.2rem;
 `;
-
-const getDistance = p1 => p2 => Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
-
-class CircleDrawer extends React.PureComponent {
-  state = {
-    circlesById: {},
-    redoStack: [],
-    hoveredCircleId: null,
-    undoStack: [],
-    selectedCircleId: null
-  };
-
-  render() {
-    const { circlesById, hoveredCircleId, selectedCircleId } = this.state;
-    const selectedCircle = circlesById[selectedCircleId];
-    const sortedCircles = sortBy(circlesById, ({ id }) => (id === hoveredCircleId ? 1 : 0));
-    return (
-      <MainFrame>
-        <Commands>
-          <Button disabled={this.state.undoStack.length === 0} onClick={this.undo}>
-            Undo
-          </Button>
-          <Button disabled={this.state.redoStack.length === 0} onClick={this.redo}>
-            Redo
-          </Button>
-        </Commands>
-        <CirclesFrame>
-          <SVG
-            innerRef={svg => (this.svg = svg)}
-            onClick={this.handleClick}
-            onMouseMove={this.handleMouseMove}
-          >
-            {sortedCircles.map(({ id, x, y, r }) => (
-              <Circle key={id} cx={x} cy={y} r={r} hovered={id === this.state.hoveredCircleId} />
-            ))}
-          </SVG>
-        </CirclesFrame>
-        {selectedCircle ? (
-          <React.Fragment>
-            <ModalBackdrop onClick={() => this.setState({ selectedCircleId: null })} />
-            <Modal>
-              <Close onClick={() => this.setState({ selectedCircleId: null })}>X</Close>
-              <p>
-                Adjust radius of circle (x: {selectedCircle.x} / y: {selectedCircle.y})
-              </p>
-              <Input
-                type="range"
-                min={5}
-                max={100}
-                value={selectedCircle.r}
-                onChange={this.handleRadiusChange}
-              />
-            </Modal>
-          </React.Fragment>
-        ) : null}
-      </MainFrame>
-    );
-  }
-
-  nextId = 1;
-
-  open = () => {
-    this.setState(({ circlesById, undoStack, hoveredCircleId }) => ({
-      undoStack: [...undoStack, circlesById],
-      selectedCircleId: hoveredCircleId
-    }));
-  };
-
-  addCircle = ({ x, y }) => {
-    const id = this.nextId++;
-    this.setState(state => ({
-      circlesById: { ...state.circlesById, [id]: { id, x, y, r: 20 } },
-      redoStack: [],
-      undoStack: [...state.undoStack, state.circlesById]
-    }));
-  };
-
-  getEventCoordinates = e => {
-    const { left: svgLeft, top: svgTop } = this.svg.getBoundingClientRect();
-    const { clientX: clickLeft, clientY: clickTop } = e;
-    const x = Math.round(clickLeft - svgLeft);
-    const y = Math.round(clickTop - svgTop);
-    return { x, y };
-  };
-
-  handleClick = e => {
-    if (this.state.hoveredCircleId) this.open();
-    else this.addCircle(this.getEventCoordinates(e));
-  };
-
-  handleRadiusChange = e => {
-    const value = e.target.value;
-    this.setState(({ circlesById, selectedCircleId }) => {
-      const selectedCircle = circlesById[selectedCircleId];
-      return {
-        circlesById: {
-          ...circlesById,
-          [selectedCircleId]: {
-            ...selectedCircle,
-            r: value
-          }
-        }
-      };
-    });
-  };
-
-  handleMouseMove = e => {
-    const { x, y } = this.getEventCoordinates(e);
-    const hoveredCircles = filter(this.state.circlesById, circle => {
-      const distance = getDistance({ x, y })(circle);
-      return distance < circle.r;
-    });
-    if (hoveredCircles.length === 0) return this.setState({ hoveredCircleId: null });
-    const closest = minBy(hoveredCircles, getDistance({ x, y }));
-    this.setState({ hoveredCircleId: closest.id });
-  };
-
-  undo = () => {
-    this.setState(state => {
-      const currentState = state.circlesById;
-      const lastState = last(state.undoStack);
-      return {
-        circlesById: lastState,
-        undoStack: initial(state.undoStack),
-        redoStack: [...state.redoStack, currentState]
-      };
-    });
-  };
-
-  redo = () => {
-    this.setState(state => {
-      const currentState = state.circlesById;
-      const nextState = last(state.redoStack);
-      return {
-        circlesById: nextState,
-        undoStack: [...state.undoStack, currentState],
-        redoStack: initial(state.redoStack)
-      };
-    });
-  };
-}
-
-export default CircleDrawer;

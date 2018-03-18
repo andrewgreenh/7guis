@@ -6,17 +6,6 @@ import Button from '../../__shared__/Button';
 import Input from '../../__shared__/Input';
 import Select from '../../__shared__/Select';
 
-const FlightBookerForm = styled.form`
-  align-items: stretch;
-  display: flex;
-  flex-direction: column;
-  width: 200px;
-
-  ${Select}, ${Input}, ${Button} {
-    margin-bottom: 0.5rem;
-  }
-`;
-
 class FlightBooker extends React.PureComponent {
   state = {
     flightType: 'One-way flight',
@@ -82,6 +71,17 @@ class FlightBooker extends React.PureComponent {
 }
 
 export default FlightBooker;
+
+const FlightBookerForm = styled.form`
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+
+  ${Select}, ${Input}, ${Button} {
+    margin-bottom: 0.5rem;
+  }
+`;
 
 const dateRegex = /^(\d+)\.(\d+).(\d{4})$/;
 

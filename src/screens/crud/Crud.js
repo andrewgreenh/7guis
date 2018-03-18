@@ -8,21 +8,6 @@ import { addPerson, deletePerson, getPersonsById, updatePerson } from './personA
 import PersonForm from './PersonForm';
 import PersonSelector from './PersonSelector';
 
-const Main = styled.div`
-  border: 1px solid ${lightGray};
-  display: grid;
-  grid-template-columns: 50% 50%;
-  grid-template-rows: auto 1fr auto;
-  height: 300px;
-  width: 500px;
-`;
-
-const Commands = styled.div`
-  grid-row: 3;
-  grid-column: 1 / 2;
-  padding: 0 0.5rem 0.5rem;
-`;
-
 class Crud extends React.PureComponent {
   state = {
     personsById: {},
@@ -104,3 +89,18 @@ class Crud extends React.PureComponent {
 }
 
 export default Crud;
+
+const Main = styled.div`
+  border: 1px solid ${lightGray};
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: auto 1fr auto;
+  height: 300px;
+  width: 500px;
+`;
+
+const Commands = styled.div`
+  grid-row: 3;
+  grid-column: 1 / 2;
+  padding: 0 0.5rem 0.5rem;
+`;

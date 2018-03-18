@@ -6,34 +6,6 @@ import Button from '../../__shared__/Button';
 import Input from '../../__shared__/Input';
 import ProgressBar from '../../__shared__/ProgressBar';
 
-const Wrapper = styled.div`
-  align-items: stretch;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  width: 400px;
-`;
-
-const Element = styled.div`
-  align-items: center;
-  display: flex;
-  overflow: hidden;
-`;
-
-const Label = styled.div`
-  flex: 0 0 auto;
-  padding-right: 3rem;
-`;
-
-const Value = styled.div`
-  flex: 1 1 auto;
-  width: 100%;
-
-  & > * {
-    width: 100%;
-  }
-`;
-
 class Timer extends React.PureComponent {
   state = {
     duration: 20,
@@ -85,3 +57,31 @@ class Timer extends React.PureComponent {
 }
 
 export default Timer;
+
+const Wrapper = styled.div`
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 400px;
+`;
+
+const Element = styled.div`
+  align-items: center;
+  display: flex;
+  overflow: hidden;
+`;
+
+const Label = styled.div`
+  flex: 0 0 auto;
+  padding-right: 3rem;
+`;
+
+const Value = styled.div`
+  flex: 1 1 auto;
+  width: 100%;
+
+  & > * {
+    width: 100%;
+  }
+`;

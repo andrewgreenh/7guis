@@ -3,26 +3,6 @@ import styled from 'styled-components';
 
 import Input from '../../__shared__/Input';
 
-const Wrapper = styled.div`
-  display: grid;
-  grid-column: 2;
-  grid-gap: 0.5rem 0.5rem;
-  grid-row: 2;
-  grid-template-columns: auto auto;
-  grid-template-rows: auto auto 1fr;
-  height: 100%;
-  padding: 0.5rem;
-`;
-
-const Cell = styled.div`
-  grid-column: ${props => props.col};
-  grid-row: ${props => props.row};
-
-  ${Input} {
-    width: 100%;
-  }
-`;
-
 function PersonForm(props) {
   return (
     <Wrapper>
@@ -43,3 +23,23 @@ function PersonForm(props) {
 }
 
 export default PersonForm;
+
+const Wrapper = styled.div`
+  display: grid;
+  grid-column: 2;
+  grid-gap: 0.5rem 0.5rem;
+  grid-row: 2;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto 1fr;
+  height: 100%;
+  padding: 0.5rem;
+`;
+
+const Cell = styled.div`
+  grid-column: ${props => props.col};
+  grid-row: ${props => props.row};
+
+  ${Input} {
+    width: 100%;
+  }
+`;
