@@ -1,5 +1,7 @@
 # 7GUIs: A GUI Programming Benchmark - Implemented in plain React
 
+[Take a look at the components](https://andreasgruenh.github.io/7guis/#/counter)
+
 This repository contains code for the 7 tasks of the [7GUIS-Challange](http://eugenkiss.github.io/7guis/).
 Each task folder contains a `discussion.md` file to talk about benefits and drawbacks of the provided solutions.
 
@@ -9,10 +11,10 @@ Implementing this in plain React without any state-containers (like Redux or Mob
 
 ## Tasks
 
-* [Counter](https://github.com/andreasgruenh/7guis/blob/master/src/screens/counter/disucssion.md)
-* [Temperature Converter](https://github.com/andreasgruenh/7guis/blob/master/src/screens/temperature-converter/disucssion.md)
-* [Flight Booker](https://github.com/andreasgruenh/7guis/blob/master/src/screens/flight-booker/disucssion.md)
-* [Timer](https://github.com/andreasgruenh/7guis/blob/master/src/screens/timer/disucssion.md)
-* [CRUD](https://github.com/andreasgruenh/7guis/blob/master/src/screens/crud/disucssion.md)
-* [Circle Drawer](https://github.com/andreasgruenh/7guis/blob/master/src/screens/circle-drawer/disucssion.md)
-* [Cells](https://github.com/andreasgruenh/7guis/blob/master/src/screens/cells/disucssion.md)
+* [Counter](https://github.com/andreasgruenh/7guis/blob/master/src/screens/counter/discussion.md)
+* [Temperature Converter](https://github.com/andreasgruenh/7guis/blob/master/src/screens/temperature-converter/discussion.md)
+* [Flight Booker](https://github.com/andreasgruenh/7guis/blob/master/src/screens/flight-booker/discussion.md)
+* [Timer](https://github.com/andreasgruenh/7guis/blob/master/src/screens/timer/discussion.md)
+* [CRUD](https://github.com/andreasgruenh/7guis/blob/master/src/screens/crud/discussion.md)
+* [Circle Drawer](https://github.com/andreasgruenh/7guis/blob/master/src/screens/circle-drawer/discussion.md)
+* [Cells](https://github.com/andreasgruenh/7guis/blob/master/src/screens/cells/discussion.md)
