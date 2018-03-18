@@ -2,7 +2,7 @@ import { flatMap, range } from 'lodash';
 
 function expandCellRef(cellRef) {
   if (!cellRef.includes(':')) return [cellRef];
-  const match = cellRef.match(/(\w+)(\d+):(\w+)(\d+)/);
+  const match = cellRef.match(/([a-z]+)(\d+):([a-z]+)(\d+)/);
   if (!match) throw new Error('Incorrect range format');
   const [, fromCol, fromRow, toCol, toRow] = match;
   return flatMap(range(+fromRow, +toRow + 1), row =>

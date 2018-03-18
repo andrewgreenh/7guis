@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "parcel build src/index.html",
+    "build": "parcel build src/index.html --public-url ./",
     "start": "parcel src/index.html -p 3000",
     "deploy": "npm run build && gh-pages -d dist"
   },
