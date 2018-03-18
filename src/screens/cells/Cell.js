@@ -1,42 +1,7 @@
-import { toString } from 'lodash';
 import React from 'react';
 import styled from 'styled-components';
 
 import Input from '../../__shared__/Input';
-
-const Tooltip = styled.div`
-  display: none;
-  background-color: lightgoldenrodyellow;
-  font-family: monospace;
-  font-size: 0.9rem;
-  padding: 0.2rem;
-  position: absolute;
-  top: 100%;
-  white-space: pre-wrap;
-  z-index: 1;
-`;
-
-const Content = styled.div`
-  align-items: center;
-  display: flex;
-  height: 100%;
-  position: relative;
-  width: 100%;
-
-  span {
-    padding-left: 0.5rem;
-  }
-
-  ${Input} {
-    font-size: 1rem;
-    height: 100%;
-    width: 100%;
-  }
-
-  &:hover ${Tooltip} {
-    display: block;
-  }
-`;
 
 class Cell extends React.PureComponent {
   state = {
@@ -71,14 +36,20 @@ class Cell extends React.PureComponent {
       );
     }
     return (
-      <Content onDoubleClick={this.handleDblClick}>
-        <span>{toString(this.state.value == null ? this.state.rawValue : this.state.value)}</span>
+      <Content onDoubleClick={this.handleDblClick} innerRef={this.highlightRerender()}>
+        <span>{this.renderValue()}</span>
         {this.state.error && <Tooltip>{this.state.error}</Tooltip>}
       </Content>
     );
   }
 
-  handleDblClick = () => this.setState(state => ({ rawMode: true, inputValue: state.rawValue }));
+  renderValue = () => {
+    if (this.state.value == null) return null;
+    return this.state.value.toString();
+  };
+
+  handleDblClick = () =>
+    this.setState(state => ({ rawMode: true, inputValue: state.rawValue || '' }));
 
   handleInputBlur = () => this.cancel();
 
@@ -101,6 +72,12 @@ class Cell extends React.PureComponent {
     }
   };
 
+  highlightRerender = () => node => {
+    if (!node) return;
+    node.setAttribute('data-highlighted', true);
+    setTimeout(() => node.removeAttribute('data-highlighted'), 500);
+  };
+
   cancel = () => this.setState({ rawMode: false });
 
   save = () => {
@@ -112,3 +89,41 @@ class Cell extends React.PureComponent {
 }
 
 export default Cell;
+
+const Tooltip = styled.div`
+  display: none;
+  background-color: lightgoldenrodyellow;
+  font-family: monospace;
+  font-size: 0.9rem;
+  padding: 0.2rem;
+  position: absolute;
+  top: 100%;
+  white-space: pre-wrap;
+  z-index: 1;
+`;
+
+const Content = styled.div`
+  align-items: center;
+  display: flex;
+  height: 100%;
+  position: relative;
+  width: 100%;
+
+  &[data-highlighted] {
+    border: 2px solid lightgreen;
+  }
+
+  span {
+    padding-left: 0.5rem;
+  }
+
+  ${Input} {
+    font-size: 1rem;
+    height: 100%;
+    width: 100%;
+  }
+
+  &:hover ${Tooltip} {
+    display: block;
+  }
+`;

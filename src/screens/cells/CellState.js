@@ -1,4 +1,4 @@
-import { cloneDeep, flatMap } from 'lodash';
+import { flatMap, reverse, uniq } from 'lodash';
 
 import evaluate from './evalutation/evaluate';
 import parse from './parser/parse';
@@ -10,7 +10,6 @@ class CellState {
   subscribersByKey = {};
 
   notifyKey = key => {
-    console.log(cloneDeep(this.statesByKey), cloneDeep(this.dependantsByKey));
     if (this.subscribersByKey[key]) this.subscribersByKey[key](this.statesByKey[key]);
   };
 
@@ -37,7 +36,7 @@ class CellState {
         this.updateIncorrectFormula(key);
       }
     } else {
-      this.updatePlain(key);
+      this.updateTextual(key);
     }
     try {
       const keysToUpdate = this.getKeysToUpdate(key);
@@ -50,7 +49,7 @@ class CellState {
     }
   };
 
-  updatePlain = key => {
+  updateTextual = key => {
     const state = this.statesByKey[key];
     state.value = state.rawValue;
     state.ast = null;
@@ -83,14 +82,17 @@ class CellState {
     [...oldDependencies].forEach(dependency => this.dependantsByKey[dependency].delete(key));
   };
 
-  getKeysToUpdate = (startingKey, alreadySeen = new Set()) => {
-    if (alreadySeen.has(startingKey)) throw new Error('Cyclic dependencies');
-    alreadySeen.add(startingKey);
+  getKeysToUpdate = (startingKey, count = 0) => {
+    if (count > 1000) throw new Error('Possible cycle detected');
     const dependants = this.dependantsByKey[startingKey] || new Set();
-    return [
-      startingKey,
-      ...flatMap([...dependants], key => this.getKeysToUpdate(key, alreadySeen))
-    ];
+    return reverse(
+      uniq(
+        reverse([
+          startingKey,
+          ...flatMap([...dependants], key => this.getKeysToUpdate(key, count + 1))
+        ])
+      )
+    );
   };
 
   evaluateKeys = keys => {

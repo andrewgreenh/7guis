@@ -12,6 +12,77 @@ const ABC = 'abcdefghijklmnopqrstuvwxyz';
 
 const SCROLLBAR_WIDTH = 12;
 
+class Grid extends React.PureComponent {
+  render() {
+    const {
+      height,
+      width,
+      rowCount,
+      rowHeight,
+      columnCount,
+      columnWidth,
+      renderCellContent
+    } = this.props;
+    return (
+      <Wrapper height={height} width={width}>
+        <BottomRight width={width} height={height} onScroll={this.handleScroll}>
+          {times(rowCount, rowIndex =>
+            times(columnCount, columnIndex => (
+              <Cell
+                key={`${rowIndex}-${columnIndex}`}
+                width={columnWidth}
+                height={rowHeight}
+                top={rowIndex * rowHeight}
+                left={columnIndex * columnWidth}
+              >
+                {renderCellContent(
+                  `${ABC[columnIndex]}${rowIndex + 1}`,
+                  `${ABC[columnIndex]}`,
+                  `${rowIndex + 1}`
+                )}
+              </Cell>
+            ))
+          )}
+        </BottomRight>
+        <TopRight width={width} height={height} innerRef={n => (this.topRight = n)}>
+          {times(columnCount, columnIndex => (
+            <Cell
+              key={columnIndex}
+              width={columnWidth}
+              height={HEADER_HEIGHT}
+              top={0}
+              left={columnIndex * columnWidth}
+            >
+              {ABC[columnIndex]}
+            </Cell>
+          ))}
+        </TopRight>
+        <BottomLeft width={width} height={height} innerRef={n => (this.bottomLeft = n)}>
+          {times(rowCount, rowIndex => (
+            <Cell
+              key={rowIndex}
+              width={FIXED_WIDTH}
+              height={rowHeight}
+              top={rowIndex * rowHeight}
+              left={0}
+            >
+              {rowIndex + 1}
+            </Cell>
+          ))}
+        </BottomLeft>
+        <TopLeft width={width} height={height} />
+      </Wrapper>
+    );
+  }
+
+  handleScroll = e => {
+    this.bottomLeft.scrollTop = e.target.scrollTop;
+    this.topRight.scrollLeft = e.target.scrollLeft;
+  };
+}
+
+export default Grid;
+
 const Wrapper = styled.div`
   height: ${props => props.height}px;
   width: ${props => props.width}px;
@@ -92,74 +163,3 @@ const BottomRight = styled.div`
     border-bottom: 1px solid ${lightGray};
   }
 `;
-
-class Grid extends React.PureComponent {
-  render() {
-    const {
-      height,
-      width,
-      rowCount,
-      rowHeight,
-      columnCount,
-      columnWidth,
-      renderCellContent
-    } = this.props;
-    return (
-      <Wrapper height={height} width={width}>
-        <BottomRight width={width} height={height} onScroll={this.handleScroll}>
-          {times(rowCount, rowIndex =>
-            times(columnCount, columnIndex => (
-              <Cell
-                key={`${rowIndex}-${columnIndex}`}
-                width={columnWidth}
-                height={rowHeight}
-                top={rowIndex * rowHeight}
-                left={columnIndex * columnWidth}
-              >
-                {renderCellContent(
-                  `${ABC[columnIndex]}${rowIndex + 1}`,
-                  `${ABC[columnIndex]}`,
-                  `${rowIndex + 1}`
-                )}
-              </Cell>
-            ))
-          )}
-        </BottomRight>
-        <TopRight width={width} height={height} innerRef={n => (this.topRight = n)}>
-          {times(columnCount, columnIndex => (
-            <Cell
-              key={columnIndex}
-              width={columnWidth}
-              height={HEADER_HEIGHT}
-              top={0}
-              left={columnIndex * columnWidth}
-            >
-              {ABC[columnIndex]}
-            </Cell>
-          ))}
-        </TopRight>
-        <BottomLeft width={width} height={height} innerRef={n => (this.bottomLeft = n)}>
-          {times(rowCount, rowIndex => (
-            <Cell
-              key={rowIndex}
-              width={FIXED_WIDTH}
-              height={rowHeight}
-              top={rowIndex * rowHeight}
-              left={0}
-            >
-              {rowIndex + 1}
-            </Cell>
-          ))}
-        </BottomLeft>
-        <TopLeft width={width} height={height} />
-      </Wrapper>
-    );
-  }
-
-  handleScroll = e => {
-    this.bottomLeft.scrollTop = e.target.scrollTop;
-    this.topRight.scrollLeft = e.target.scrollLeft;
-  };
-}
-
-export default Grid;
