@@ -8,7 +8,7 @@ import { navigationHeight } from './Navigation';
 
 function GithubCorner() {
   return (
-    <CornerLink href="https://your-url" aria-label="View source on Github">
+    <CornerLink href="https://github.com/andreasgruenh/7guis" aria-label="View source on Github">
       <OctoWrapper
         width={navigationHeight}
         height={navigationHeight}
